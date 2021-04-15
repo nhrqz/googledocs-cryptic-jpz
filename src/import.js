@@ -25,14 +25,22 @@ export function formatResultForDoc(res) {
   const words = makeSolutionsInWords(get(crossword, 'word'), grid);
   const [acrossClues, downClues] = get(crossword, 'clues');  
   
-  const puzzleString = [
-    printMeta(meta),
-    printGrid(grid, w, h),
-    printClues(acrossClues, words),
-    printClues(downClues, words),
+  // const puzzleString = [
+  //   printMeta(meta),
+  //   printGrid(grid, w, h),
+  //   printClues(acrossClues, words),
+  //   printClues(downClues, words),
+  // ].join('\n\n');
+
+  const pMeta = printMeta(meta);
+  const pGrid = printGrid(grid, w, h);
+  const pClues = [
+    printClues(acrossClues, words), 
+    printClues(downClues, words)
   ].join('\n\n');
   
-  return puzzleString;
+  // return puzzleString;
+  return [ pMeta, pGrid, pClues ]
 }
 
 function printMeta({ title, creator }) {

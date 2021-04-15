@@ -7,7 +7,7 @@
  * Test to make sure we can access functions in the Library.
  */
 function testlib() {
-	var res = AppLib.test()
+	const res = AppLib.test()
 	Logger.log(res);
 }
 
@@ -34,9 +34,7 @@ function onOpen(e) {
  * Returns an HTML dialog with a file input to upload a .puz.
  */
 function uploadStarter() {
-	// var html = HtmlService.createTemplateFromFile('upload')
-	var html = HtmlService.createHtmlOutputFromFile('upload')
-		// .evaluate()
+	const html = HtmlService.createHtmlOutputFromFile('upload')
 		.setWidth(300)
 		.setHeight(200);
 	DocumentApp.getUi().showModalDialog(html, 'Upload .jpz');
@@ -60,21 +58,34 @@ async function processUploadFile(base64data) {
       dataString = Utilities.unzip(dataBlob)[0].getDataAsString();
     }
 		
-		const puzString = await AppLib.getPuzNew(dataString);
+		const [ meta, grid, clues ] = await AppLib.getPuzNew(dataString);
 		
-    let style = {};
-		style[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT] =
-			DocumentApp.HorizontalAlignment.RIGHT;
-		style[DocumentApp.Attribute.FONT_FAMILY] = 'Source Code Pro';
-		style[DocumentApp.Attribute.FONT_SIZE] = 11;
-		style[DocumentApp.Attribute.LINE_SPACING] = 100;
+    const style = {
+			[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT]: DocumentApp.HorizontalAlignment.LEFT,
+			[DocumentApp.Attribute.FONT_FAMILY]: 'Source Code Pro',
+			[DocumentApp.Attribute.FONT_SIZE]: 10.5,
+			[DocumentApp.Attribute.INDENT_FIRST_LINE]: 0,
+			[DocumentApp.Attribute.INDENT_START]: 144,
+			[DocumentApp.Attribute.LINE_SPACING]: 1.15,
+			[DocumentApp.Attribute.SPACING_AFTER]: 10
+		};
 
 		const body = DocumentApp.getActiveDocument().getBody();
-		body.setText(puzString)
-		.setAttributes(style)
-		.getParagraphs().forEach(para => {
-			para.setIndentFirstLine(0).setIndentStart(144);
+		body.clear();
+
+		addParagraphs(meta, body, style, {
+			[DocumentApp.Attribute.SPACING_AFTER]: 0
 		});
+		
+		addParagraphs('', body, style);
+		
+		addParagraphs(grid, body, style, {
+			[DocumentApp.Attribute.LINE_SPACING]: 1.00,
+			[DocumentApp.Attribute.SPACING_AFTER]: 0
+		});
+		
+		addParagraphs('', body, style);
+		addParagraphs(clues, body, style);
 
 	} catch (e) {
     console.error(e);
@@ -82,6 +93,16 @@ async function processUploadFile(base64data) {
 	}
 	Logger.log('processed!')
   return true;
+}
+
+function addParagraphs(text, body, style, overrides = {}) {
+	for (const p of text.split('\n')) {
+		body.appendParagraph(p)
+			.setAttributes({
+				...style,
+				...overrides
+			})
+	}
 }
 
 // ----------------------------------------------------------------------------
@@ -92,7 +113,7 @@ async function processUploadFile(base64data) {
  * Returns an HTML dialog with a file input to upload a .puz.
  */
 function downloadStarter() {
-	var html = HtmlService.createTemplateFromFile('jpzDialog')
+	const html = HtmlService.createTemplateFromFile('jpzDialog')
 		.evaluate()
 		.setWidth(300)
 		.setHeight(150);
@@ -158,10 +179,10 @@ function makeJpzFromDoc(activeDoc) {
  * @param {*} para 
  */
 function processItals(para) {
-	var textElem = para.editAsText();
+	const textElem = para.editAsText();
 	if (textElem.isItalic() === null) {
-		var string = '';
-		var text = textElem.getText();
+		let string = '';
+		const text = textElem.getText();
 		for (i = 0; i<text.length; i++) {
 			if (textElem.isItalic(i)) {
 				if (i === 0 || !textElem.isItalic(i-1)) {
