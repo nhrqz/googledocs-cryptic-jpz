@@ -1,0 +1,38 @@
+# Numerous always-ignore extensions
+*.diff
+*.err
+*.orig
+*.log
+*.rej
+*.swo
+*.swp
+*.vi
+*~
+*.sass-cache
+ 
+# Mac OS X
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+
+# Microsoft Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Thumbnails
+._*
+=======
+*.sublime-project
+*.sublime-workspace
+**/boto
+**/progressbar
+**/*.app/
+*.project
+*.pydevproject
+
+node_modules/
+dist/
+.clasp.json

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<base target="_top">
+		<style>
+			#output {margin-bottom: 38px}
+			#button {margin-left: 5px;}
+			#download:hover {text-decoration: none;}
+		</style>
+		<link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+	</head>
+	<body>
+		<? var puz = createJpz(); ?>
+
+		<p id="output">Loading...</p>
+		<div id="download-container">
+			<a id="<?= puz.filename ?>" download='<?= puz.filename ?>' href='data:text/xml;base64,<?= puz.data ?>'>
+				<!-- <button id="dl-button" class="action" disabled>Download</button> -->
+				<?= puz.filename ?>
+			</a>
+			<!-- <button id="close-button" onclick="google.script.host.close()">Close</button> -->
+		</div>
+	</body>
+	<script>
+		function allowDl() {
+			var puztitle = document.getElementById('download-container')
+														 .getElementsByTagName('a')[0]
+														 .getAttribute('download');
+			var outputText = document.getElementById('output');
+			// outputText.innerHTML = 'Download ' + puztitle + '?';
+			outputText.innerHTML = 'To download, right-click the link below and select "Save Link As..."'
+			// document.getElementById("dl-button").disabled = false;
+		}
+
+		window.addEventListener('load', allowDl)
+	</script>
+</html>

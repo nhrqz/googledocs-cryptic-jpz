@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+    <base target="_top">
+    <script>
+      // Prevent forms from submitting.
+      function preventFormSubmit() {
+        var forms = document.querySelectorAll('form');
+        for (var i = 0; i < forms.length; i++) {
+          forms[i].addEventListener('submit', function(event) {
+            event.preventDefault();
+          });
+        }
+      }
+      window.addEventListener('load', preventFormSubmit);
+    
+      function handleFormSubmit(uploadForm) {
+
+        const files = document.getElementById('myfile').files;
+        if (files.length === 0) {
+          updateDiv('Please choose a file.');
+        } else {
+          disableForm();
+          updateDiv(`Uploading ${files[0].name} ...`);
+          const file = files[0];
+          const reader = new FileReader();
+
+          reader.addEventListener("load", function () {
+            process(reader.result);
+          }, false);
+
+          if (file) {
+            reader.readAsDataURL(file);
+          }
+        }
+      }
+
+      function process(puzfile) {
+        google
+          .script
+          .run
+          .withSuccessHandler(doSuccess)
+          .withFailureHandler(doFailure)
+          .processUploadFile(puzfile);
+      }
+    
+      function doSuccess() {
+        google.script.host.close();
+      }
+    
+      function disableForm() {
+        var inputs = document.getElementsByTagName('input');
+        for (var input of inputs) {
+          input.disabled = true;
+        }
+      }
+    
+      function doFailure(e) {
+        updateDiv(e.message);
+        var inputs = document.getElementsByTagName('input');
+        for (var input of inputs) {
+          input.disabled = false;
+        }
+      }
+
+      function updateDiv(string) {
+        var div = document.getElementById('output');
+        div.innerHTML = '<p>' + string + '</p>';
+      }
+    </script>
+    <style>
+			#output {margin-bottom: 38px}
+      #myfile {margin-bottom: 15px;}
+			/* #button {margin-left: 5px;} */
+			/* #buttons {position: fixed; bottom: 0px; right: 0px;} */
+		</style>
+		<link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
+	</head>
+	<body>
+    <p>Choose a .jpz file to upload:</p>
+    <p>Any existing text in the document will be overwritten.</p>
+    <form id="myForm" onsubmit="handleFormSubmit(this)">
+      <!-- <p>Choose a file</p> -->
+      <input name="myfile" id="myfile" type="file" accept=".jpz,.xml"/>
+      <input id="submit" class="action" type="submit" value="Submit" />
+    </form>
+    <div id="output"></div>
+	</body>
+</html>
