@@ -29,13 +29,14 @@ async function getPuzNew(dataString) {
     ]
   });
 
-  return parser.parseStringPromise(dataString).then(res => {
-    const print = formatResultForDoc(res);
-    return print;
-  })
-  .catch(e => {
-    console.error(e);
-  })
+  return parser.parseStringPromise(dataString)
+    .then(res => {
+      const print = formatResultForDoc(res);
+      return print;
+    })
+    .catch(e => {
+      console.error(e);
+    })
 }
 
 // EXPORT 
