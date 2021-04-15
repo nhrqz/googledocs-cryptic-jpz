@@ -52,8 +52,8 @@ export function makeJpzXml({meta, gridPs, cluePs}) {
  * @returns 
  */
 function makeGridJpz(gridArr) {
-	const gridWidth = gridArr[0].length;
-	
+  const gridWidth = gridArr[0].length;
+  
   const grid = gridArr.map(rowStr => {
     if (rowStr.length < gridWidth) {
       rowStr = rowStr.padEnd(gridWidth);
@@ -208,29 +208,29 @@ function makeWordsFromCells(cells, index, offset) {
  * @returns 
  */
 function makeCluesJpz(cluePs) {
-	const clues = {
-		across: [],
-		down: []
-	};
-	
+  const clues = {
+    across: [],
+    down: []
+  };
+  
   cluePs.forEach((clueP, clueIndex) => {
-		const [ , num, dir, clue] = clueP //.trim();
-		if (dir === 'A') {
-			clues.across.push({
-				'@number': num,
-				'@word': clueIndex + 1,
-				span: he.encode( clue.trim(), {decimal: true} )
-			})
-		} else if (dir === 'D') {
-			clues.down.push({
-				'@number': num,
-				'@word': clueIndex + 1,
-				span: he.encode( clue.trim(), {decimal: true} )
-			})
-		}
-	});
+    const [ , num, dir, clue] = clueP //.trim();
+    if (dir === 'A') {
+      clues.across.push({
+        '@number': num,
+        '@word': clueIndex + 1,
+        span: he.encode( clue.trim(), {decimal: true} )
+      })
+    } else if (dir === 'D') {
+      clues.down.push({
+        '@number': num,
+        '@word': clueIndex + 1,
+        span: he.encode( clue.trim(), {decimal: true} )
+      })
+    }
+  });
 
-	return [
+  return [
     {
       title: { b: 'Across' },
       clue: clues.across
